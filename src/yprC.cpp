@@ -3,18 +3,16 @@ using namespace Rcpp;
 
 // Code for running YPR models from Dippold et al. (2016)
 
-
 // Main function declaration
 //[[Rcpp::export]]
 Rcpp::List yprC(NumericVector fm, NumericVector nm, NumericMatrix N,
                 NumericMatrix Wt){
 
-  //Define iterators for total number of fish (n rows in moves matrix) and
-  //for total number of dams
+  // Define iterators for HMC samples (n) and age (f)
   int n = nm.size();
   int f = fm.size();
 
-  //Pre-allocate memory
+  // Declare objects created in fxn
   Rcpp::NumericMatrix Nd(n, f);
   Rcpp::NumericMatrix Nc(n, f);
   Rcpp::NumericVector Z(n);
@@ -35,7 +33,10 @@ Rcpp::List yprC(NumericVector fm, NumericVector nm, NumericMatrix N,
     }
   }
 
+  // Output list declaration
   List out;
+
+  // Add output to list
   out["Z"] = Z;
   out["N"] = N;
   out["Nd"] = Nd;
