@@ -1,0 +1,11 @@
+Package: myCpp
+Type: Package
+Title: Cpp functions for parallel processing
+Version: 0.1.0
+Author: Daniel S Stich
+Maintainer: Dan Stich <daniel.stich@oneonta.edu>
+Description: Package containing Cpp functions that I want to use for parallel processing
+License: GNU 3.0
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp
