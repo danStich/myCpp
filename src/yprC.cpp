@@ -1,0 +1,45 @@
+#include <Rcpp.h>
+using namespace Rcpp;
+
+// Code for running YPR models from Dippold et al. (2016)
+
+
+// Main function declaration
+//[[Rcpp::export]]
+Rcpp::List yprC(NumericVector fm, NumericVector nm, NumericMatrix N,
+                NumericMatrix Wt){
+  
+  //Define iterators for total number of fish (n rows in moves matrix) and
+  //for total number of dams
+  int n = nm.size();
+  int f = fm.size();
+  
+  //Pre-allocate a matrix to hold delay (in days) at each dam for each fish
+  Rcpp::NumericMatrix Nd(n, f);
+  Rcpp::NumericMatrix Nc(n, f);
+  Rcpp::NumericVector Z(n);
+  Rcpp::NumericVector YPR(n);
+  
+  for(int i = 0; i < n; i++){  
+    for(int t = 1; t < f; t++){    
+      // Total instantaneous mortality
+      Z[i] = fm[t] + nm[i];  
+      // Population change
+      N(i, t) = N(i, (t-1)) * exp(-Z[i]);
+      // Number of individuals that died
+      Nd(i, t) = N(i, t) * (1 - exp(-Z[i]));
+      // Number that died from fishing
+      Nc(i, t) = Nd(i, t) * (fm[t]/Z[i]);
+      // YPR
+      YPR[i] = Nc(i,t)*Wt(i, t);      
+    }
+  }
+
+  List out;
+  out["Z"] = Z;
+  out["N"] = N;
+  out["Nd"] = Nd;
+  out["Nc"] = Nc;
+  out["ypr"] = YPR;
+  return out;
+}
